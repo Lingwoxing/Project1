@@ -1,0 +1,60 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_LENGTH 1000
+
+int main()
+{
+    FILE *fp1, *fp2;
+    char file1[MAX_LENGTH], file2[MAX_LENGTH], str1[MAX_LENGTH], str2[MAX_LENGTH];
+    int line_number = 1, match_count = 0;
+    
+    printf("请输入要比较的第一个文本文件的路径：\n");
+    scanf("%s", file1);
+    
+    printf("请输入要比较的第二个文本文件的路径：\n");
+    scanf("%s", file2);
+    
+    fp1 = fopen(file1, "r");
+    fp2 = fopen(file2, "r");
+    
+    if (fp1 == NULL || fp2 == NULL) {
+        printf("打开文件失败，请检查文件路径是否正确！\n");
+        return 1;
+    }
+    
+    while (fgets(str1, MAX_LENGTH, fp1) != NULL) {
+        while (fgets(str2, MAX_LENGTH, fp2) != NULL) {
+            if (strcmp(str1, str2) == 0) {
+                printf("发现一处重复，第 %d 行：\n", line_number);
+                printf("%s", str1);
+                match_count++;
+            }
+            line_number++;
+        }
+        rewind(fp2);
+        line_number = 1;
+    }
+    
+    if (match_count == 0) {
+        printf("没有发现重复！\n");
+    } else {
+        printf("共发现 %d 处重复！\n", match_count);
+    }
+    
+    fclose(fp1);
+    fclose(fp2);
+    
+    return 0;
+}
+
+
+请注意，这只是一个示例程序，仅用于说明如何计算SimHash和海明距离，并计算文本文件之间的相似度。您需要根据自己的实际情况进行修改和优化。
+
+在上面的代码中，simhash函数用于计算给定文本的SimHash值。它首先将文本分为单词，并计算每个单词的哈希值。然后，它将每个哈希值的每一位都加到一个64位的数组中，并根据每一位的值将其合并为一个SimHash值。
+
+hamming_distance函数用于计算两个SimHash值之间的海明距离。它首先将这两个SimHash值进行异或操作，然后统计结果中二进制位上不同的位数。
+
+similarity函数用于计算两个文本文件之间的相似度。它首先分别计算这两个文本文件的SimHash值，然后计算它们之间的海明距离，最后根据海明距离计算相似度。该函数返回一个0到1之间的实数，其中1表示两个文本完全相同，0表示它们没有任何相似之处。
+
+请注意，该示例程序使用了一些简单的算法和技巧来计算SimHash值和海明距离。您可以根据自己的需求来使用更高级的算法来计算相似度。同时，您也可以根据自己的需求来调整代码的实现方式，以便在处理更大的文本文件时能够提高性能。
